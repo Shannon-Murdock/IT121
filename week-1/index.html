@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shannon Murdock's IT 121 Homework</title>
+    <meta name="description" content="Homework for week 1.">
+    <meta name="keywords" content="javascript, it121, shannon murdock, homework, SCC">
+    <meta name="author" content="Shannon Murdock">
+    <style>
+        table {
+          border-collapse: collapse;
+          max-width: 800px;
+          margin-left: 0;
+          border-top: 1px solid black;
+          border-bottom: 1px solid black;
+        }
+      
+        th, td {
+          text-align: left;
+          padding: 15px;
+          border-left: 1px solid black;
+          border-right: 1px solid black;
+        }
+        
+        th {
+          font-weight: bold;
+          border-bottom: 2px solid black;
+        }
+
+        @media (max-width: 600px) {
+            table, th, td {
+                width: 100%;
+                display: block;
+                text-align: center; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2>My Profile</h2>
+
+<p id="profile"></p>
+
+<script>
+var firstName = "Shannon";
+var lastName = "Murdock";
+var yearsOfStudy = 0.25;
+var goal = "seek a more technical role in IT";
+
+document.getElementById("profile").innerHTML = "My name is " + firstName + " " + lastName + ". I have been at SCC for " + yearsOfStudy + " years and plan to " + goal + " after completing my courses.";
+</script>
+
+<!-- Begin Course History -->
+  <p>Below you'll find my course history at Seattle Central College, which includes completed coursework as well as courses in which I am currently enrolled.</p><br>
+  <table>
+  <tr>
+    <th>Quarter</th>
+    <th>Course Number</th> 
+    <th>Course Name</th>
+  </tr>
+  <tr>
+    <td>Fall 2024</td>
+    <td>IT100</td> 
+    <td>Info Tech Fundamentals</td>
+  </tr>
+  <tr>
+    <td>Fall 2024</td>
+    <td>IT120</td> 
+    <td>Database Development</td>
+  </tr>
+  <tr>
+    <td>Fall 2024</td>
+    <td>IT211</td> 
+    <td>Object Oriented Programming with Java</td>
+  </tr>
+  <tr>
+    <td>Fall 2024</td>
+    <td>IT161</td> 
+    <td>Web Authoring 1</td>
+  </tr>
+  <tr>
+    <td>Winter 2025</td>
+    <td>IT111</td>
+    <td>Programming Fundamentals</td>
+  </tr>
+  <tr>
+    <td>Winter 2025</td>
+    <td>IT115</td>
+    <td>Software Development Tools</td>
+  </tr>
+  <tr>
+    <td>Winter 2025</td>
+    <td>IT121</td>
+    <td>JavaScript 1</td>
+  </tr>
+</table>
+<footer style="display: flex; flex-direction: column; align-items: center; font-size: 0.8em;">
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <div>
+      <p>Shannon Murdock</p>
+      <p>He/Him/His</p>
+      <p>253-339-8042</p>
+      <p><a href="mailto:shannon.murdock@seattlecolleges.edu">shannon.murdock@seattlecolleges.edu</a></p>
+      <p><a href="mailto:shannon@smurdock.com">shannon@smurdock.com</a></p>
+    </div>
+  </div>
+  <div style="width: 100%; text-align: center;">
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> Shannon Murdock. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+</html>
