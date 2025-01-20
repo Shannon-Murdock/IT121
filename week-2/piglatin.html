@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pig Latin translator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .translator {
+            text-align: center;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="translator">
+    <h1>Pig Latin Translator</h1>
+    <p>Enter a word or phrase to translate:</p>
+    <input type="text" id="input" onkeydown="if (event.keyCode == 13) translatePhrase()">
+    <p id="output"></p>
+</div>
+
+<script>
+    // Program Name: Pig Latin translator
+    // Author: Shannon Murdock
+    // Date: January 19, 2025
+
+    // Pseudo-code:
+    // Step 1: Wait for the user to enter a phrase and press Enter
+    // Step 2: Translate the entered phrase into Pig Latin
+    // Step 3: Display the translated phrase
+
+    function translatePhrase() {
+        // Step 1: Get the entered phrase
+        let phrase = document.getElementById('input').value;
+
+        // Step 2: Translate the entered phrase into Pig Latin
+        if (phrase.length <= 1) {
+            document.getElementById('output').innerText = "Input can't be translated.";
+        } else {
+            let words = phrase.split(' ');
+            let translatedWords = words.map(word => {
+                let firstLetter = word[0];
+                let restOfWord = word.slice(1);
+                let firstTwoLetters = word.slice(0, 2);
+                let restOfWordTwo = word.slice(2);
+
+                if ('aeiou'.includes(firstLetter.toLowerCase())) {
+                    return word + 'way';
+                } else if (!'aeiou'.includes(firstTwoLetters[1].toLowerCase())) {
+                    return restOfWordTwo + firstTwoLetters + 'ay';
+                } else {
+                    return restOfWord + firstLetter + 'ay';
+                }
+            });
+
+            // Step 3: Display the translated phrase
+            document.getElementById('output').innerText = "Pig Latin translation - " + translatedWords.join(' ');
+        }
+    }
+</script>
+
+</body>
+</html>
