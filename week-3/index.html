@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student grades</title>
+    <style>
+        .column {
+            float: left;
+            width: 50%;
+        }
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            margin-top: 2em;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 0.5em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="row">
+    <div id="column1" class="column"></div>
+    <div id="column2" class="column"></div>
+</div>
+
+<script>
+    const grades = "jim|25, sue|32, mary|34, ann|22, ted|28, frank|15, lisa|19, mike|30, ahn|26, vishaya|27";
+
+    let students = grades.split(", ");
+    students.sort((a, b) => a.split("|")[0].localeCompare(b.split("|")[0]));
+
+    let total = 0;
+    let lowest = Infinity;
+    let highest = -Infinity;
+    let average;
+
+    for (let i = 0; i < students.length; i++) {
+        let [name, grade] = students[i].split("|");
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+        grade = parseInt(grade);
+        total += grade;
+        if (grade < lowest) {
+            lowest = grade;
+        }
+        if (grade > highest) {
+            highest = grade;
+        }
+        if (i < 5) {
+            document.getElementById("column1").innerHTML += name + " - " + grade + "<br>";
+        } else {
+            document.getElementById("column2").innerHTML += name + " - " + grade + "<br>";
+        }
+    }
+
+    average = total / students.length;
+
+    let table = document.createElement("table");
+    let row1 = table.insertRow();
+    let cell1 = row1.insertCell();
+    cell1.textContent = "Total number of students";
+    let cell2 = row1.insertCell();
+    cell2.textContent = students.length;
+    let row2 = table.insertRow();
+    cell1 = row2.insertCell();
+    cell1.textContent = "Lowest score";
+    cell2 = row2.insertCell();
+    cell2.textContent = lowest;
+    let row3 = table.insertRow();
+    cell1 = row3.insertCell();
+    cell1.textContent = "Highest score";
+    cell2 = row3.insertCell();
+    cell2.textContent = highest;
+    let row4 = table.insertRow();
+    cell1 = row4.insertCell();
+    cell1.textContent = "Average score";
+    cell2 = row4.insertCell();
+    cell2.textContent = average.toFixed(2);
+
+    document.body.appendChild(table);
+</script>
+
+</body>
+</html>
