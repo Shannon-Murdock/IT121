@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+</head>
+<body>
+
+<h1>Functions & Validation</h1>
+
+<form id="form1" action="#" onsubmit="return validateForm(this);">
+  first name: <input type="text" name="firstname"><br>
+  last name: <input type="text" name="lastname"><br>
+  password: <input type="text" name="password"><br>
+
+  <button >Check</button>
+</form>
+
+<hr><div id="message"></div>
+
+<script>
+
+  const validateForm = (myForm) => {
+
+    // add validatePassword function here
+    const validatePassword = (password) => {
+      return password.length >= 8 && 
+             /[A-Z]/.test(password) &&  // Uppercase check
+             /[a-z]/.test(password);    // Lowercase check
+    };
+
+    const firstName = myForm.firstname.value.trim();
+    const lastName = myForm.lastname.value.trim();
+    const password = myForm.password.value;
+    let firstname = myForm.firstname.value; // get text of firstname field
+
+    /* Form validation code goes here
+    */
+
+    // Validate first name
+    if (!firstName) {
+      $("#message").html("First name is required.")
+        .removeClass("success").addClass("error");
+      return false;
+    }
+
+    // Validate last name
+    if (!lastName) {
+      $("#message").html("Last name is required.")
+        .removeClass("success").addClass("error");
+      return false;
+    }
+
+    // Validate password
+    if (!validatePassword(password)) {
+      $("#message").html("Password must be 8+ characters with uppercase AND lowercase letters.")
+        .removeClass("success").addClass("error");
+      return false;
+    }
+
+    // use this syntax to update 'message' DIV with appropriate wording
+ // All valid
+ $("#message").html("All fields are valid!")
+      .removeClass("error").addClass("success");
+    return false; // Prevent form submission
+  };
+
+</script>
+
+    <footer style="display: flex; flex-direction: column; align-items: center; font-size: 0.8em; margin-top: 2em;">
+        <div style="display: flex; justify-content: space-between; width: 100%;">
+            <div>
+                <p style="margin: 0; line-height: 1;">Shannon Murdock</p>
+                <p style="margin: 0; line-height: 1;">He/Him/His</p>
+                <p style="margin: 0; line-height: 1;">253-339-8042</p>
+                <p style="margin: 0; line-height: 1;">
+                  <a href="mailto:shannon.murdock@seattlecolleges.edu" style="line-height: 1;">shannon.murdock@seattlecolleges.edu</a>
+                </p>
+                <p style="margin: 0; line-height: 1;">
+                  <a href="mailto:shannon@smurdock.com" style="line-height: 1;">shannon@smurdock.com</a>
+                </p>
+            </div>
+        </div>
+        <div style="width: 100%; text-align: center;">
+
+            <p style="margin: 0; line-height: 1;">&copy; <script>document.write(new Date().getFullYear())</script> Shannon Murdock. All rights reserved.</p>
+          </div>
+    </footer>      
+</body>
+</html> 
