@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Robo Dealer</title>
+    <meta name="description" content="Seattle Central College, Winter Quarter 2025, IT121 1VH 30638 - W25 - Javascript 1, Week 5 Assignment - HW 5 - Robo Dealer (+ Bonus Features)">
+    <meta name="author" content="Shannon Murdock">
+    <style>
+    .logo {  
+        display: block;
+        margin: 0 auto;  
+        width: 50%;
+        text-align: center;
+    }
+
+    
+    @keyframes floatIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .card-image {
+      width: 125px;
+      margin: 5px;
+      display: inline-block;
+      animation: floatIn 0.5s ease-out forwards;
+    }
+
+    /* Footer styles */
+    .footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.8em;
+        margin-top: 2em;
+    }
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .footer-item {
+        margin: 0;
+        line-height: 1;
+    }
+    .footer-copyright {
+        width: 100%;
+        text-align: center;
+        margin-top: 1em;
+    }
+    .contact-info {
+        text-align: left;
+    }
+    
+    .course-info {
+        text-align: right;
+    }
+    </style>
+    <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="logo">
+      <img src="img/RoboDealer.png" width="200px" alt="Robo Dealer">
+  </div>
+
+  <button onclick="dealHand();">Deal Hand</button>
+
+  <hr><div id="card_hand"></div>
+
+  <script>
+    class Card {
+      constructor(value, suit) {
+        this.value = value;
+        this.suit = suit;
+        this.image = this.getImagePath();
+      }
+
+      getImagePath() {
+        let valuePrefix;
+        switch(this.value) {
+          case 11: valuePrefix = 'J'; break;
+          case 12: valuePrefix = 'Q'; break;
+          case 13: valuePrefix = 'K'; break;
+          case 14: valuePrefix = 'A'; break;
+          default: valuePrefix = this.value.toString();
+        }
+        return `img/${valuePrefix}${this.suit}.jpg`;
+      }
+    } 
+
+    // Generate deck
+    const deck = [];
+    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+    suits.forEach(suit => {
+      for (let value = 2; value <= 14; value++) {
+        deck.push(new Card(value, suit));
+      }
+    });
+
+    function dealHand() {
+    // Get 5 unique cards
+    const hand = [];
+    const usedIndices = new Set();
+    
+    while (hand.length < 5) {
+      const index = Math.floor(Math.random() * 52);
+      if (!usedIndices.has(index)) {
+        hand.push(deck[index]);
+        usedIndices.add(index);
+      }
+    }
+
+    // Update display
+    const $container = $("#card_hand").empty();
+    hand.forEach((card, index) => {
+      $container.append(
+        $('<img>', {
+          src: card.image,
+          alt: `${card.value} of ${card.suit}`,
+          class: 'card-image',
+          css: {
+            'animation-delay': `${index * 0.2}s`,
+            'opacity': 0
+          }
+        })
+      );
+    });
+    return false;
+  }
+  </script>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="contact-info">
+                <p class="footer-item">Shannon Murdock</p>
+                <p class="footer-item">he/him/his</p>
+                <p class="footer-item">253-339-8042</p>
+                <p class="footer-item">
+                    <a href="mailto:shannon.murdock@seattlecolleges.edu" class="footer-item">shannon.murdock@seattlecolleges.edu</a>
+                </p>
+                <p class="footer-item">
+                    <a href="mailto:shannon@smurdock.com" class="footer-item">shannon@smurdock.com</a>
+                </p>
+            </div>
+            <div class="course-info">
+                <p class="footer-item">Class: IT121 - JavaScript 1</p>
+                <p class="footer-item">Instructor: Brenden West</p>
+                <p class="footer-item">Week: 5</p>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p class="footer-item">&copy; <script>document.write(new Date().getFullYear())</script> Shannon Murdock. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Robo Dealer</title>
+    <meta name="author" content="Shannon Murdock">
+    <meta name="description" content="Seattle Central College, Winter Quarter 2025, IT121 1VH 30638 - W25 - Javascript 1, Week 5 Assignment - HW 5 - Robo Dealer">
+    <style>
+    .logo {  
+        display: block;
+        margin: 0 auto;  
+        width: 50%;
+        text-align: center;
+    }
+    
+    /* Footer styles */
+    .footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.8em;
+        margin-top: 2em;
+    }
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .footer-item {
+        margin: 0;
+        line-height: 1;
+    }
+    .footer-copyright {
+        width: 100%;
+        text-align: center;
+        margin-top: 1em;
+    }
+    .contact-info {
+        text-align: left;
+    }
+    
+    .course-info {
+        text-align: right;
+    }
+    </style>
+    <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="logo">
+    <img src="img/RoboDealer.png" width="200px" alt="Robo Dealer">
+</div>
+
+  <button onclick="dealHand();">Deal Hand</button>
+
+<hr><div id="card_hand"></div>
+
+<script>
+
+  class Card {
+    constructor(value, suit) {
+      this.value = value;
+      this.suit = suit;
+    }
+  }
+
+  const suits = ['Spades', 'Hearts', 'Diamonds', 'Clubs'];
+  const deck = [];
+  for (const suit of suits) {
+    for (let value = 2; value <= 14; value++) { 
+      deck.push(new Card(value, suit));
+    }
+  }
+
+  
+    const dealHand = () => {
+ 
+        const hand = [];
+        const usedIndices = new Set();
+    
+        while (hand.length < 5) {
+            const index = Math.floor(Math.random() * 52);
+            // Ensure unique cards in this hand
+            if (!usedIndices.has(index)) {
+                hand.push(deck[index]);
+                usedIndices.add(index);
+            }
+        } 
+
+    const cardList = hand.map(card => {
+      let valueName = card.value;
+      // Convert face cards
+      switch(card.value) {
+        case 11: valueName = 'Jack'; break;
+        case 12: valueName = 'Queen'; break;
+        case 13: valueName = 'King'; break;
+        case 14: valueName = 'Ace'; break;
+      }
+      return `- ${valueName} of ${card.suit}`;
+    });
+
+    $("#card_hand").html(cardList.join('<br>'));
+    return false;
+  }
+
+</script>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="contact-info">
+                <p class="footer-item">Shannon Murdock</p>
+                <p class="footer-item">he/him/his</p>
+                <p class="footer-item">253-339-8042</p>
+                <p class="footer-item">
+                    <a href="mailto:shannon.murdock@seattlecolleges.edu" class="footer-item">shannon.murdock@seattlecolleges.edu</a>
+                </p>
+                <p class="footer-item">
+                    <a href="mailto:shannon@smurdock.com" class="footer-item">shannon@smurdock.com</a>
+                </p>
+            </div>
+            <div class="course-info">
+                <p class="footer-item">Class: IT121 - JavaScript 1</p>
+                <p class="footer-item">Instructor: Brenden West</p>
+                <p class="footer-item">Week: 5</p>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p class="footer-item">&copy; <script>document.write(new Date().getFullYear())</script> Shannon Murdock. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
