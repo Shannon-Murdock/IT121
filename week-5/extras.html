@@ -108,10 +108,10 @@
       }
     });
 
+    let usedIndices = new Set();
     function dealHand() {
     // Get 5 unique cards
     const hand = [];
-    const usedIndices = new Set();
     
     while (hand.length < 5) {
       const index = Math.floor(Math.random() * 52);

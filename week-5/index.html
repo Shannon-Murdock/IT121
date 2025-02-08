@@ -76,12 +76,11 @@
     }
   }
 
-  
-    const dealHand = () => {
+    let usedIndices = new Set();
+    function dealHand() {
  
         const hand = [];
-        const usedIndices = new Set();
-    
+            
         while (hand.length < 5) {
             const index = Math.floor(Math.random() * 52);
             // Ensure unique cards in this hand
