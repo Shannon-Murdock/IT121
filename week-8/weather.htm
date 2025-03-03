@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Storm Central Channel</title>
+    <meta name="description" content="Seattle Central College, Winter Quarter 2025, IT121 1VH 30638 - W25 - Javascript 1, Week 8 Assignment - HW 8 - Sunny With A Chance Of Awesome">
+    <meta name="author" content="Shannon Murdock">
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .error { 
+            color: red; 
+            font-weight: bold; 
+        }
+        .day-forecast { 
+            border: 1px solid #ccc; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Header Banner Styles */
+        .banner {
+            position: relative;
+            height: 300px; /* Adjust height as needed */
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        .banner-title {
+            position: relative;
+            z-index: 2;
+            color: rgb(255, 238, 0);
+            text-align: center;
+            padding-top: 80px;
+            font-size: 3.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        /* Footer Styles */
+        .footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2em 1em;
+            font-size: 0.8em;
+            margin-top: 2em;
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-info, .course-info {
+            padding: 0 1em;
+        }
+
+        .contact-info {
+            text-align: left;
+        }
+
+        .course-info {
+            text-align: right;
+        }
+
+        .footer-item {
+            margin: 0.5em 0;
+            line-height: 1.4;
+        }
+
+        .footer-item a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-item a:hover {
+            color: #007bff;
+        }
+
+        .footer-copyright {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            margin-top: 1.5em;
+            padding-top: 1em;
+            border-top: 1px solid #e9ecef;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .contact-info, .course-info {
+                text-align: center;
+                padding: 0.5em 0;
+            }
+            
+            .footer-item {
+                margin: 0.3em 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="banner">
+        <video autoplay muted loop class="background-video">
+            <source src="vid/Foggy-Mntns.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <h1 class="banner-title">Storm Central Channel</h1>
+    </header>
+    <h1>Daily Weather Forecast</h1>
+    <form id="weatherForm">
+        <div>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" aria-label="Enter city name">
+        </div>
+        <div>
+            <label for="state">State:</label>
+            <select id="state" name="state" aria-label="Select state">
+                <option value="">Select a state</option>
+            </select>
+        </div>
+        <div>
+            <label for="zip">Zip Code:</label>
+            <input type="text" id="zip" name="zip" pattern="\d{5}" title="Enter a 5-digit zip code" aria-label="Enter 5-digit zip code">
+        </div>
+        <div>
+            <button type="submit" id="getForecastBtn">Get Forecast</button>
+            <button type="button" id="clearBtn">Clear Form</button>
+        </div>
+    </form>
+    <div id="errorContainer" class="error" style="display: none;"></div>
+    <div id="forecast"></div>
+    <div style="text-align: right; margin-top: 20px;">
+        <p style="margin-bottom: 5px;">Powered by:</p>
+        <img src="img/sunshine.jpg" alt="Shannon Sunshine" style="max-width: 150px; height: auto;">
+    </div>
+    <script>
+        // OpenWeather API key
+        // TODO: Double check the API key is still valid!
+        const API_KEY = "af884cf2d82ce7c1b75514e25eefe2d3";
+
+        // Convert Kelvin to Fahrenheit Temperatures
+        const kelvinToF = (value) => {
+            const fahrenheit = (((Number(value) - 273.15) * 9) / 5) + 32;
+            return fahrenheit.toFixed(2);
+        };
+
+        // Array of US states and their abbreviations (Including Guam and Puerto Rico)
+        const states = [
+            { name: 'Alabama', abbr: 'AL' },
+            { name: 'Alaska', abbr: 'AK' },
+            { name: 'Arizona', abbr: 'AZ' },
+            { name: 'Arkansas', abbr: 'AR' },
+            { name: 'California', abbr: 'CA' },
+            { name: 'Colorado', abbr: 'CO' },
+            { name: 'Connecticut', abbr: 'CT' },
+            { name: 'Delaware', abbr: 'DE' },
+            { name: 'Florida', abbr: 'FL' },
+            { name: 'Georgia', abbr: 'GA' },
+            { name: 'Guam', abbr: 'GU' },
+            { name: 'Hawaii', abbr: 'HI' },
+            { name: 'Idaho', abbr: 'ID' },
+            { name: 'Illinois', abbr: 'IL' },
+            { name: 'Indiana', abbr: 'IN' },
+            { name: 'Iowa', abbr: 'IA' },
+            { name: 'Kansas', abbr: 'KS' },
+            { name: 'Kentucky', abbr: 'KY' },
+            { name: 'Louisiana', abbr: 'LA' },
+            { name: 'Maine', abbr: 'ME' },
+            { name: 'Maryland', abbr: 'MD' },
+            { name: 'Massachusetts', abbr: 'MA' },
+            { name: 'Michigan', abbr: 'MI' },
+            { name: 'Minnesota', abbr: 'MN' },
+            { name: 'Mississippi', abbr: 'MS' },
+            { name: 'Missouri', abbr: 'MO' },
+            { name: 'Montana', abbr: 'MT' },
+            { name: 'Nebraska', abbr: 'NE' },
+            { name: 'Nevada', abbr: 'NV' },
+            { name: 'New Hampshire', abbr: 'NH' },
+            { name: 'New Jersey', abbr: 'NJ' },
+            { name: 'New Mexico', abbr: 'NM' },
+            { name: 'New York', abbr: 'NY' },
+            { name: 'North Carolina', abbr: 'NC' },
+            { name: 'North Dakota', abbr: 'ND' },
+            { name: 'Ohio', abbr: 'OH' },
+            { name: 'Oklahoma', abbr: 'OK' },
+            { name: 'Oregon', abbr: 'OR' },
+            { name: 'Pennsylvania', abbr: 'PA' },
+            { name: 'Puerto Rico', abbr: 'PR' },
+            { name: 'Rhode Island', abbr: 'RI' },
+            { name: 'South Carolina', abbr: 'SC' },
+            { name: 'South Dakota', abbr: 'SD' },
+            { name: 'Tennessee', abbr: 'TN' },
+            { name: 'Texas', abbr: 'TX' },
+            { name: 'Utah', abbr: 'UT' },
+            { name: 'Vermont', abbr: 'VT' },
+            { name: 'Virginia', abbr: 'VA' },
+            { name: 'Washington', abbr: 'WA' },
+            { name: 'West Virginia', abbr: 'WV' },
+            { name: 'Wisconsin', abbr: 'WI' },
+            { name: 'Wyoming', abbr: 'WY' },
+        ];
+
+        // Function to populate the state dropdown list
+        function populateStateDropdown() {
+            const stateSelect = document.getElementById('state');
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.abbr;
+                option.textContent = state.name;
+                stateSelect.appendChild(option);
+            });
+        }
+
+        // Validate the form
+        const validateForm = () => {
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value;
+            const zip = document.getElementById('zip').value.trim();
+            const errorContainer = document.getElementById('errorContainer');
+
+            errorContainer.style.display = 'none';
+
+            if (!city && !state && !zip) {
+                displayError("Please enter either a city and state, or a zip code.");
+                return false;
+            }
+
+            if ((city || state) && zip) {
+                displayError("Please enter either city and state, or zip code, not both.");
+                return false;
+            }
+
+            if ((city && !state) || (!city && state)) {
+                displayError("Please enter both city and state.");
+                return false;
+            }
+
+            if (zip && !/^\d{5}$/.test(zip)) {
+                displayError("Please enter a valid 5-digit zip code.");
+                return false;
+            }
+
+            return true;
+        };
+
+        // Display error messages when input is noncompliant
+        const displayError = (message) => {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = message;
+            errorContainer.style.display = 'block';
+        };
+
+        // Get coordinates for city and state
+        const getCoordinates = async (city, state) => {
+            const geocodingUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city},${state},US&limit=1&appid=${API_KEY}`;
+            const response = await fetch(geocodingUrl);
+            const data = await response.json();
+            if (data.length === 0) throw new Error("Location not found");
+            return { lat: data[0].lat, lon: data[0].lon };
+        };
+
+        // Get coordinates for zip code
+        const getCoordinatesByZip = async (zip) => {
+            const geocodingUrl = `https://api.openweathermap.org/geo/1.0/zip?zip=${zip},US&appid=${API_KEY}`;
+            const response = await fetch(geocodingUrl);
+            const data = await response.json();
+            if (!data.lat || !data.lon) throw new Error("Invalid zip code");
+            return { lat: data.lat, lon: data.lon };
+        };
+
+        // Get forecast data
+        const getForecast = async (lat, lon) => {
+            const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+            const response = await fetch(forecastUrl);
+            const data = await response.json();
+            if (!data.list || data.list.length === 0) throw new Error("No forecast data available");
+            return data;
+        };
+
+        // Display forecast
+        const displayForecast = (forecastData) => {
+            const forecastDiv = document.getElementById('forecast');
+            forecastDiv.innerHTML = '';
+
+            const dailyForecasts = groupForecastsByDay(forecastData.list);
+
+            dailyForecasts.forEach(day => {
+                const date = new Date(day.dt * 1000);
+                const minTemp = kelvinToF(day.main.temp_min);
+                const maxTemp = kelvinToF(day.main.temp_max);
+                const { humidity } = day.main;
+                const { description, icon } = day.weather[0];
+
+                const dayForecast = document.createElement('div');
+                dayForecast.className = 'day-forecast';
+                dayForecast.innerHTML = `
+                    <h3>${date.toDateString()}</h3>
+                    <img src="https://openweathermap.org/img/w/${icon}.png" alt="${description}">
+                    <p>Temperature: ${minTemp}°F to ${maxTemp}°F</p>
+                    <p>Humidity: ${humidity}%</p>
+                    <p>Conditions: ${description}</p>
+                `;
+
+                forecastDiv.appendChild(dayForecast);
+            });
+        };
+        
+        // Group forecasts by day
+        const groupForecastsByDay = (forecastList) => {
+            const dailyForecasts = [];
+            const groupedByDay = {};
+
+            forecastList.forEach(forecast => {
+                const date = new Date(forecast.dt * 1000).toDateString();
+                if (!groupedByDay[date]) {
+                    groupedByDay[date] = forecast;
+                } else {
+                    const { main } = groupedByDay[date];
+                    main.temp_min = Math.min(main.temp_min, forecast.main.temp_min);
+                    main.temp_max = Math.max(main.temp_max, forecast.main.temp_max);
+                }
+            });
+
+            for (const day in groupedByDay) {
+                dailyForecasts.push(groupedByDay[day]);
+            }
+
+            return dailyForecasts.slice(0, 5); // Return only 5 days of forecast
+        };
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            populateStateDropdown();
+
+            const weatherForm = document.getElementById('weatherForm');
+            const getForecastBtn = document.getElementById('getForecastBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            weatherForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!validateForm()) return;
+
+                getForecastBtn.disabled = true;
+
+                try {
+                    let coordinates;
+                    const city = document.getElementById('city').value.trim();
+                    const state = document.getElementById('state').value;
+                    const zip = document.getElementById('zip').value.trim();
+
+                    if (zip) {
+                        coordinates = await getCoordinatesByZip(zip);
+                    } else {
+                        coordinates = await getCoordinates(city, state);
+                    }
+
+                    const forecastData = await getForecast(coordinates.lat, coordinates.lon);
+                    displayForecast(forecastData);
+                } catch (error) {
+                    displayError(`Error: ${error.message}`);
+                } finally {
+                    getForecastBtn.disabled = false;
+                }
+            });
+
+            clearBtn.addEventListener('click', () => {
+                document.getElementById('city').value = '';
+                document.getElementById('state').value = '';
+                document.getElementById('zip').value = '';
+                document.getElementById('forecast').innerHTML = '';
+                document.getElementById('errorContainer').style.display = 'none';
+            });
+        });
+    </script>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="contact-info">
+                <p class="footer-item">Shannon Murdock</p>
+                <p class="footer-item">he/him/his</p>
+                <p class="footer-item">253-339-8042</p>
+                <p class="footer-item">
+                    <a href="mailto:shannon.murdock@seattlecolleges.edu">shannon.murdock@seattlecolleges.edu</a>
+                </p>
+                <p class="footer-item">
+                    <a href="mailto:shannon@smurdock.com">shannon@smurdock.com</a>
+                </p>
+            </div>
+            <div class="course-info">
+                <p class="footer-item">Class: IT121 - JavaScript 1</p>
+                <p class="footer-item">Instructor: Brenden West</p>
+                <p class="footer-item">Week: 8</p>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p class="footer-item">&copy; <script>document.write(new Date().getFullYear())</script> Shannon Murdock. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
